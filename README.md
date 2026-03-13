@@ -1,120 +1,84 @@
-
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Selantes - Engenharia</title>
+    <title>Frajola - Calculadora de Selantes Pro</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; width: 100%; }
-        h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-        
-        /* Estilo para a imagem de referência */
-        .reference-image {
-            width: 100%; /* Ocupar a largura total do container */
-            max-width: 400px; /* Mas não passar de 400px */
-            display: block; /* Para poder centralizar */
-            margin: 10px auto 20px auto; /* Centralizar e dar margem */
-            border: 1px solid #ddd; /* Uma bordinha suave */
-            border-radius: 4px; /* Cantos arredondados */
-        }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 4px; font-size: 18px; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #2980b9; }
-        .results { margin-top: 25px; padding: 15px; background: #e8f4fd; border-radius: 4px; border-left: 5px solid #3498db; }
-        .results p { margin: 8px 0; color: #2c3e50; }
-        .highlight { font-weight: bold; color: #e67e22; font-size: 1.1em; }
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background-color: #fcfcfc; }
+        label { display: block; margin-top: 10px; font-weight: bold; color: #333; }
+        input { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; margin-top: 20px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #218838; }
+        .resultado { margin-top: 20px; padding: 15px; background-color: #e9ecef; border-left: 5px solid #28a745; border-radius: 4px; }
+        img { max-width: 100%; height: auto; margin: 15px 0; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Cálculo de Consumo de Selante</h2>
+    <h2 style="text-align: center;">Calculadora de Selantes</h2>
     
-    <img src="junta_detalhe.png" alt="Diagrama de Seção Transversal da Junta" class="reference-image">
-    <div class="form-group">
-        <label>Largura da Junta (mm):</label>
-        <input type="number" id="largura" placeholder="Ex: 15" step="0.1">
+    <img src="junta_detalhe.png" alt="Detalhe técnico da junta de dilatação">
+
+    <label for="comprimento">Comprimento da Junta (metros):</label>
+    <input type="number" id="comprimento" placeholder="Ex: 10.50" step="0.01">
+
+    <div class="grid">
+        <div>
+            <label for="largura">Largura (mm):</label>
+            <input type="number" id="largura" placeholder="Ex: 20">
+        </div>
+        <div>
+            <label for="profundidade">Profundidade (mm):</label>
+            <input type="number" id="profundidade" placeholder="Ex: 10">
+        </div>
     </div>
 
-    <div class="form-group">
-        <label>Profundidade da Junta (mm):</label>
-        <input type="number" id="profundidade" placeholder="Ex: 8" step="0.1">
+    <div class="grid">
+        <div>
+            <label for="volumeEmbalagem">Embalagem (ml):</label>
+            <input type="number" id="volumeEmbalagem" value="600">
+        </div>
+        <div>
+            <label for="margemPerda">Margem Perda (%):</label>
+            <input type="number" id="margemPerda" value="10">
+        </div>
     </div>
 
-    <div class="form-group">
-        <label>Comprimento Total (m):</label>
-        <input type="number" id="comprimento" placeholder="Ex: 1200" step="0.1">
+    <button onclick="calcular()">Calcular com Precisão</button>
+
+    <div id="resultado" class="resultado" style="display:none;">
+        <p id="textoResultado"></p>
     </div>
 
-    <div class="form-group">
-        <label>Volume da Embalagem (mL):</label>
-        <select id="embalagem">
-            <option value="280">Cartucho (280 mL)</option>
-            <option value="300">Cartucho (300 mL)</option>
-            <option value="400">Sachê (400 mL)</option>
-            <option value="600" selected>Sachê (600 mL)</option>
-        </select>
-    </div>
+    <script>
+        function calcular() {
+            const comp = parseFloat(document.getElementById('comprimento').value);
+            const larg = parseFloat(document.getElementById('largura').value);
+            const prof = parseFloat(document.getElementById('profundidade').value);
+            const volEmb = parseFloat(document.getElementById('volumeEmbalagem').value);
+            const perda = parseFloat(document.getElementById('margemPerda').value);
 
-    <div class="form-group">
-        <label>Margem de Perda (%):</label>
-        <input type="number" id="perda" value="10" step="1">
-    </div>
+            if (comp > 0 && larg > 0 && prof > 0 && volEmb > 0) {
+                // Cálculo do volume teórico em ml
+                // (Largura cm * Profundidade cm * Comprimento cm)
+                let volumeTeorico = (larg / 10) * (prof / 10) * (comp * 100);
+                
+                // Aplicação da margem de perda
+                let volumeComPerda = volumeTeorico * (1 + (perda / 100));
+                
+                // Quantidade de embalagens (arredondado para cima)
+                const quantidade = Math.ceil(volumeComPerda / volEmb);
 
-    <button onclick="calcular()">Calcular Quantitativo</button>
-
-    <div id="resultado" class="results" style="display:none;">
-        <p>Volume total da obra: <span id="volTotal" class="highlight"></span> mL/cm³</p>
-        <p>Rendimento por embalagem: <span id="rendimento" class="highlight"></span> metros</p>
-        <p>Quantidade necessária: <span id="qtdFinal" class="highlight"></span> unidades</p>
-    </div>
-</div>
-
-<script>
-    function calcular() {
-        // Obter valores
-        const w_mm = parseFloat(document.getElementById('largura').value);
-        const d_mm = parseFloat(document.getElementById('profundidade').value);
-        const L_m = parseFloat(document.getElementById('comprimento').value);
-        const V_emb = parseFloat(document.getElementById('embalagem').value);
-        const perda = parseFloat(document.getElementById('perda').value) / 100;
-
-        if (!w_mm || !d_mm || !L_m) {
-            alert("Por favor, preencha todos os campos obrigatórios.");
-            return;
+                document.getElementById('resultado').style.display = 'block';
+                document.getElementById('textoResultado').innerHTML = 
+                    `Volume Teórico: <strong>${volumeTeorico.toFixed(0)} ml</strong><br>` +
+                    `Volume c/ Perda (${perda}%): <strong>${volumeComPerda.toFixed(0)} ml</strong><br><br>` +
+                    `Total de Embalagens: <span style="font-size: 20px; color: #28a745;"><strong>${quantidade} unidades</strong></span>`;
+            } else {
+                alert("Preencha os campos obrigatórios para o cálculo.");
+            }
         }
-
-        // Conversões conforme o texto do Mestre Gui
-        // 1. mm para cm
-        const w_cm = w_mm / 10;
-        const d_cm = d_mm / 10;
-        // 2. m para cm
-        const L_cm = L_m * 100;
-
-        // Cálculo do Volume Total (V = w * d * L)
-        const volGeometrico = w_cm * d_cm * L_cm;
-        const volComPerda = volGeometrico * (1 + perda);
-
-        // Rendimento por tubo (m)
-        // Rendimento = Volume Embalagem / Área da Seção
-        const areaSecao = w_cm * d_cm;
-        const rend_cm = V_emb / areaSecao;
-        const rend_m = rend_cm / 100;
-
-        // Quantidade de tubos
-        const qtd = Math.ceil(volComPerda / V_emb);
-
-        // Exibir resultados
-        document.getElementById('resultado').style.display = 'block';
-        document.getElementById('volTotal').innerText = volComPerda.toLocaleString('pt-BR', {maximumFractionDigits: 2});
-        document.getElementById('rendimento').innerText = rend_m.toLocaleString('pt-BR', {maximumFractionDigits: 2});
-        document.getElementById('qtdFinal').innerText = qtd;
-    }
-</script>
-
+    </script>
 </body>
 </html>
